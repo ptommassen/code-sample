@@ -1,12 +1,18 @@
 package software.uniqore.codesample
 
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import software.uniqore.codesample.databinding.ActivityMainBinding
+import software.uniqore.codesample.databinding.ItemBinding
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,58 +20,69 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val myDataset = arrayOf("bla", "blorp")
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = MyAdapter(myDataset)
+        viewAdapter = MyAdapter(getData())
 
-        recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
+        recyclerView = binding.myRecyclerView.apply {
             setHasFixedSize(true)
-
-            // use a linear layout manager
             layoutManager = viewManager
-
-            // specify an viewAdapter (see also next example)
             adapter = viewAdapter
 
         }
     }
 
-    class MyAdapter(private val myDataset: Array<String>) :
-            RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+    fun getData(): Observable<Array<String>> {
+        val myDataset = arrayOf("bla", "blorp")
+        return Observable.just(myDataset).delay(2, TimeUnit.SECONDS)
+    }
 
-        // Provide a reference to the views for each data item
-        // Complex data items may need more than one view per item, and
-        // you provide access to all the views for a data item in a view holder.
-        // Each data item is just a string in this case that is shown in a TextView.
-        class ViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view)
+    class MyAdapter(private val dataObservable: Observable<Array<String>>) :
+            RecyclerView.Adapter<MyAdapter.ViewHolder>(), Observer<Array<String>> {
+
+        var data = emptyArray<String>()
+
+        init {
+            dataObservable.subscribe(this)
+        }
 
 
-        // Create new views (invoked by the layout manager)
+        class ViewHolder(val itemBinding: ItemBinding) : RecyclerView.ViewHolder(itemBinding.root)
+
         override fun onCreateViewHolder(parent: ViewGroup,
                                         viewType: Int): MyAdapter.ViewHolder {
-            // create a new view
-            val textView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item, parent, false) as ViewGroup
-            // set the view's size, margins, paddings and layout parameters
-            return ViewHolder(textView)
+            val itemBinding = ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ViewHolder(itemBinding)
         }
 
-        // Replace the contents of a view (invoked by the layout manager)
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            // - get element from your dataset at this position
-            // - replace the contents of the view with that element
-            holder.view.findViewById<TextView>(R.id.text).apply { text = myDataset[position] }
+            holder.itemBinding.text.text = data[position]
         }
 
-        // Return the size of your dataset (invoked by the layout manager)
-        override fun getItemCount() = myDataset.size
+        override fun getItemCount() = data.size
+
+
+        override fun onComplete() {
+        }
+
+        override fun onSubscribe(d: Disposable) {
+        }
+
+        override fun onNext(t: Array<String>) {
+            val oldSize = data.size
+            data = t
+            notifyItemRangeInserted(oldSize - 1, data.size - oldSize)
+        }
+
+        override fun onError(e: Throwable) {
+        }
+
     }
 
 }
