@@ -51,8 +51,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.itemBinding.photo = photos[position]
-            holder.itemBinding.executePendingBindings()
+            holder.itemBinding.apply {
+                photo = photos[position]
+                GlideApp.with(image).load(photos[position].url).centerCrop().into(image)
+                executePendingBindings()
+            }
         }
 
         override fun getItemCount() = photos.size
