@@ -9,18 +9,27 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import dagger.Component
 import software.uniqore.codesample.databinding.ActivityMainBinding
 import software.uniqore.codesample.databinding.ItemBinding
+import javax.inject.Inject
+import javax.inject.Singleton
 
 class MainActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var model: PhotoProvider
+    @Inject
+    lateinit var viewModelFactory: DaggerViewModelFactory
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: PhotoViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DaggerApplicationInjector.create().inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        viewModel = ViewModelProviders.of(this).get(PhotoViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PhotoViewModel::class.java)
         binding.viewModel = viewModel
         binding.executePendingBindings()
 
@@ -67,4 +76,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+}
+
+@Singleton
+@Component(modules = [DummyModule::class, ViewModelModule::class])
+interface ApplicationInjector {
+    fun inject(activity: MainActivity);
 }

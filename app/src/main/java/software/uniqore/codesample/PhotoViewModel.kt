@@ -4,31 +4,19 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.BaseObservable
 import android.databinding.ObservableField
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.LocalDateTime
-import java.util.*
-import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+
 
 data class Photo(val url: String, val author: String, val date: LocalDateTime) : BaseObservable() {
 }
 
-class PhotoModel {
 
-    fun getPhotos(): Observable<ArrayList<Photo>> {
-        val photos = ArrayList<Photo>()
-        photos.add(Photo("https://farm1.staticflickr.com/850/28804302867_f59cb8a86d_b.jpg", "steve_clayworth", LocalDateTime.parse("2018-07-28T16:23:35")))
-        photos.add(Photo("https://farm1.staticflickr.com/860/28804304497_3461b9de06_b.jpg", "@sebastian1906", LocalDateTime.parse("2018-07-28T16:23:39")))
-        return Observable.just(photos).delay(2, TimeUnit.SECONDS)
-    }
-}
-
-class PhotoViewModel : ViewModel() {
-
-    var model: PhotoModel = PhotoModel()
+class PhotoViewModel @Inject constructor(private var model: PhotoProvider) : ViewModel() {
 
     val loading = ObservableField(true)
     var photos = MutableLiveData<List<Photo>>()
