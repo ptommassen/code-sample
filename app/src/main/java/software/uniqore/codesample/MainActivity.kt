@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import dagger.Component
 import software.uniqore.codesample.databinding.ActivityMainBinding
 import software.uniqore.codesample.databinding.ItemBinding
+import software.uniqore.codesample.model.Photo
+import software.uniqore.codesample.remote.FlickrPhotoProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -79,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Singleton
-@Component(modules = [DummyModule::class, ViewModelModule::class])
+@Component(modules = [FlickrPhotoProvider.DaggerModule::class, ViewModelModule::class])
 interface ApplicationInjector {
     fun inject(activity: MainActivity);
 }

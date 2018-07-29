@@ -2,18 +2,13 @@ package software.uniqore.codesample
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.databinding.BaseObservable
 import android.databinding.ObservableField
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import org.threeten.bp.LocalDateTime
+import software.uniqore.codesample.model.Photo
 import javax.inject.Inject
-
-
-data class Photo(val url: String, val author: String, val date: LocalDateTime) : BaseObservable() {
-}
 
 
 class PhotoViewModel @Inject constructor(private var model: PhotoProvider) : ViewModel() {
@@ -37,7 +32,7 @@ class PhotoViewModel @Inject constructor(private var model: PhotoProvider) : Vie
                     }
 
                     override fun onError(e: Throwable) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        throw e
                     }
 
                 }))
