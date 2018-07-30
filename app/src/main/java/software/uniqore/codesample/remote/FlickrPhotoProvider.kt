@@ -2,7 +2,6 @@ package software.uniqore.codesample.remote
 
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.ZonedDateTime
@@ -10,9 +9,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import software.uniqore.codesample.PhotoProvider
 import software.uniqore.codesample.model.Photo
 
+interface RemotePhotoRetriever {
+    fun retrievePhotos(): Single<List<Photo>>
+}
 
 data class FlickrItem(val title: String, val media: Map<String, String>, val date_taken: String, val author: String)
 
@@ -23,13 +24,12 @@ interface FlickrService {
     fun getFeed(): Single<FlickrFeed>
 }
 
-class FlickrPhotoProvider : PhotoProvider {
-
+class FlickrPhotoProvider : RemotePhotoRetriever {
 
     @Module
     class DaggerModule {
         @Provides
-        open fun providePhotoProvider(): PhotoProvider = FlickrPhotoProvider()
+        open fun providePhotoProvider(): RemotePhotoRetriever = FlickrPhotoProvider()
     }
 
 
@@ -40,15 +40,14 @@ class FlickrPhotoProvider : PhotoProvider {
                     GsonConverterFactory.create())
             .build();
 
-    val flickrService = retrofit.create(FlickrService::class.java)
+    private val flickrService = retrofit.create(FlickrService::class.java)!!
 
-    override fun getPhotos(): Observable<List<Photo>> {
+
+    override fun retrievePhotos(): Single<List<Photo>> {
 
         return flickrService.getFeed()
                 .subscribeOn(Schedulers.io())
                 .map { feed -> feed.items.map { item -> Photo(item.media["m"]!!, item.author, ZonedDateTime.parse(item.date_taken).toLocalDateTime()) } }
-                .toObservable()
-
     }
 
 }
