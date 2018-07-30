@@ -8,10 +8,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import software.uniqore.codesample.model.Photo
+import software.uniqore.codesample.repository.PhotoRepository
 import javax.inject.Inject
 
 
-class PhotoViewModel @Inject constructor(private var model: PhotoProvider) : ViewModel() {
+class PhotoViewModel @Inject constructor(private var repository: PhotoRepository) : ViewModel() {
 
     val loading = ObservableField(true)
     var photos = MutableLiveData<List<Photo>>()
@@ -19,7 +20,7 @@ class PhotoViewModel @Inject constructor(private var model: PhotoProvider) : Vie
 
     fun loadPhotos() {
         loading.set(true)
-        disposables.add(model.getPhotos()
+        disposables.add(repository.getPhotos()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<Photo>>() {

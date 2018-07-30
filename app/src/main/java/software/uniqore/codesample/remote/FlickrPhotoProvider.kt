@@ -29,7 +29,7 @@ class FlickrPhotoProvider : RemotePhotoRetriever {
     @Module
     class DaggerModule {
         @Provides
-        open fun providePhotoProvider(): RemotePhotoRetriever = FlickrPhotoProvider()
+        fun providePhotoProvider(): RemotePhotoRetriever = FlickrPhotoProvider()
     }
 
 

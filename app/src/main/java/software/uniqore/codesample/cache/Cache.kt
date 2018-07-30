@@ -34,13 +34,12 @@ interface CacheStorage {
     fun load(): CachedData?
 }
 
-
-class FileCacheStorage @Inject constructor(var context: Context) : CacheStorage {
+class FileCacheStorage @Inject constructor(private val context: Context) : CacheStorage {
 
     @Module
     class DaggerModule {
         @Provides
-        open fun provideFileCacheStorage(context: Context): CacheStorage = FileCacheStorage(context)
+        fun provideFileCacheStorage(context: Context): CacheStorage = FileCacheStorage(context)
     }
 
 
@@ -67,12 +66,12 @@ class FileCacheStorage @Inject constructor(var context: Context) : CacheStorage 
 
 }
 
-class DefaultCache @Inject constructor(var dataStorage: CacheStorage) : Cache {
+class DefaultCache @Inject constructor(private val dataStorage: CacheStorage) : Cache {
 
     @Module
     class DaggerModule {
         @Provides
-        open fun provideDefaultCache(storage: CacheStorage): Cache = DefaultCache(storage)
+        fun provideDefaultCache(storage: CacheStorage): Cache = DefaultCache(storage)
     }
 
 
