@@ -22,11 +22,11 @@ class CacheUnitTest {
         val defaultCache = DefaultCache(mockCacheStorage)
 
         val cached = defaultCache.retrieveCache().toObservable()
-        val subscriber = TestObserver<Cache.CachedPhotos>()
-        cached.subscribe(subscriber)
-        subscriber.await()
+        val testObserver = TestObserver<Cache.CachedPhotos>()
+        cached.subscribe(testObserver)
+        testObserver.await()
 
-        asserts(subscriber)
+        asserts(testObserver)
     }
 
     @Test

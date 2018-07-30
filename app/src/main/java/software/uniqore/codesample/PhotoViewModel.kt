@@ -2,7 +2,7 @@ package software.uniqore.codesample
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.databinding.ObservableField
+import android.databinding.ObservableBoolean
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class PhotoViewModel @Inject constructor(private var repository: PhotoRepository) : ViewModel() {
 
-    val loading = ObservableField(true)
+    val loading = ObservableBoolean(true)
     var photos = MutableLiveData<List<Photo>>()
     private val disposables = CompositeDisposable()
 
@@ -37,6 +37,14 @@ class PhotoViewModel @Inject constructor(private var repository: PhotoRepository
                     }
 
                 }))
+    }
+
+    fun refreshPhotos() {
+        loading.set(true)
+        disposables.add(repository.update().observeOn(AndroidSchedulers.mainThread()).subscribe { list ->
+            loading.set(false)
+            photos.value = list
+        })
     }
 
     override fun onCleared() {

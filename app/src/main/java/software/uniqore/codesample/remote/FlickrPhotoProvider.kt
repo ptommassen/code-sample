@@ -10,6 +10,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import software.uniqore.codesample.model.Photo
+import java.util.concurrent.TimeUnit
 
 interface RemotePhotoRetriever {
     fun retrievePhotos(): Single<List<Photo>>
@@ -47,7 +48,9 @@ class FlickrPhotoProvider : RemotePhotoRetriever {
 
         return flickrService.getFeed()
                 .subscribeOn(Schedulers.io())
+                .delay(5, TimeUnit.SECONDS)
                 .map { feed -> feed.items.map { item -> Photo(item.media["m"]!!, item.author, ZonedDateTime.parse(item.date_taken).toLocalDateTime()) } }
+
     }
 
 }

@@ -3,6 +3,7 @@ package software.uniqore.codesample
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
+import android.databinding.Observable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -30,10 +31,23 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.executePendingBindings()
 
+        binding.swiperefresh.setOnRefreshListener { viewModel.refreshPhotos() }
+
         binding.myRecyclerView.layoutManager = LinearLayoutManager(this)
         val viewAdapter = MyAdapter(arrayListOf())
         binding.myRecyclerView.adapter = viewAdapter
-        viewModel.photos.observe(this, Observer<List<Photo>> { it?.let { viewAdapter.setPhotos(it) } })
+        viewModel.photos.observe(this, Observer<List<Photo>> {
+            it?.let {
+                binding.swiperefresh.isRefreshing = false
+                viewAdapter.setPhotos(it)
+            }
+        })
+
+        viewModel.loading.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                binding.swiperefresh.isRefreshing = viewModel.loading.get()
+            }
+        })
 
     }
 

@@ -11,25 +11,19 @@
             type="software.uniqore.codesample.PhotoViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <ProgressBar
-            android:id="@+id/loader"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="@{viewModel.loading ? View.VISIBLE : View.GONE}" />
-
-        <android.support.v7.widget.RecyclerView android:id="@+id/my_recycler_view"
-            android:scrollbars="vertical"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{viewModel.loading ? View.GONE : View.VISIBLE}"
+            android:scrollbars="vertical"
             tools:context=".MainActivity"
             tools:listitem="@layout/item" />
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </layout>
