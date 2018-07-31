@@ -12,13 +12,13 @@ import software.uniqore.codesample.repository.PhotoRepository
 import javax.inject.Inject
 
 
-open class PhotoViewModel @Inject constructor(private var repository: PhotoRepository) : ViewModel() {
+class PhotoViewModel @Inject constructor(private var repository: PhotoRepository) : ViewModel() {
 
     val loading = ObservableBoolean(true)
     var photos = MutableLiveData<List<Photo>>()
     private val disposables = CompositeDisposable()
 
-    open fun loadPhotos() {
+    fun loadPhotos() {
         loading.set(true)
         disposables.add(repository.getPhotos()
                 .subscribeOn(Schedulers.io())
@@ -39,7 +39,7 @@ open class PhotoViewModel @Inject constructor(private var repository: PhotoRepos
                 }))
     }
 
-    open fun refreshPhotos() {
+    fun refreshPhotos() {
         loading.set(true)
         disposables.add(repository.update().observeOn(AndroidSchedulers.mainThread()).subscribe { list ->
             loading.set(false)
