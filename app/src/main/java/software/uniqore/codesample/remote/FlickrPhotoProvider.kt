@@ -21,7 +21,7 @@ data class FlickrItem(val title: String, val media: Map<String, String>, val dat
 data class FlickrFeed(val items: Array<FlickrItem>)
 
 interface FlickrService {
-    @GET("/services/feeds/photos_public.gne?format=json&nojsoncallback=1")
+    @GET("/services/feeds/photos_public.gne?format=json&nojsoncallback=1&tags=landscape")
     fun getFeed(): Single<FlickrFeed>
 }
 
@@ -48,7 +48,6 @@ class FlickrPhotoProvider : RemotePhotoRetriever {
 
         return flickrService.getFeed()
                 .subscribeOn(Schedulers.io())
-                .delay(5, TimeUnit.SECONDS)
                 .map { feed -> feed.items.map { item -> Photo(item.media["m"]!!, item.author, ZonedDateTime.parse(item.date_taken).toLocalDateTime()) } }
 
     }
