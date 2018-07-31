@@ -12,28 +12,21 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dagger.android.AndroidInjection
 import software.uniqore.codesample.databinding.PhotoBinding
 import software.uniqore.codesample.databinding.PhotosActivityBinding
 import software.uniqore.codesample.model.Photo
 import software.uniqore.codesample.support.GlideApp
 import javax.inject.Inject
 
-open class PhotosActivity : AppCompatActivity() {
+class PhotosActivity : AppCompatActivity(), Injectable {
     @Inject
     @VisibleForTesting
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: PhotosActivityBinding
     private lateinit var viewModel: PhotoViewModel
 
-    open fun inject() {
-        AndroidInjection.inject(this)
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inject()
         binding = DataBindingUtil.setContentView(this, R.layout.photos_activity)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PhotoViewModel::class.java)
         binding.viewModel = viewModel
