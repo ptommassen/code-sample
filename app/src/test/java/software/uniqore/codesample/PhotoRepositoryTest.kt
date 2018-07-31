@@ -99,13 +99,17 @@ class PhotoRepositoryUnitTest {
         val testObserver = TestObserver<List<Photo>>()
         photoRepository.getPhotos().subscribe(testObserver)
 
-        testObserver.awaitCount(1)
-        testObserver.assertValueAt(0, cachedPhotoList)
+        testObserver.await()
+        testObserver.assertValue(cachedPhotoList)
         verifyZeroInteractions(mockRemote)
 
-        photoRepository.update()
+        photoRepository.update().subscribe(testObserver)
+
         testObserver.awaitCount(2)
+        testObserver.assertValueAt(0, cachedPhotoList)
         testObserver.assertValueAt(1, remotePhotoList)
+
+        verify(mockRemote).retrievePhotos()
         verify(mockCache).storeInCache(remotePhotoList)
 
     }

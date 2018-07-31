@@ -1,32 +1,40 @@
 package software.uniqore.codesample
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.databinding.Observable
 import android.os.Bundle
+import android.support.annotation.VisibleForTesting
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import dagger.android.AndroidInjection
-import software.uniqore.codesample.databinding.ActivityMainBinding
-import software.uniqore.codesample.databinding.ItemBinding
+import software.uniqore.codesample.databinding.PhotoBinding
+import software.uniqore.codesample.databinding.PhotosActivityBinding
 import software.uniqore.codesample.model.Photo
+import software.uniqore.codesample.support.GlideApp
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+open class PhotosActivity : AppCompatActivity() {
     @Inject
-    lateinit var viewModelFactory: DaggerViewModelFactory
-    private lateinit var binding: ActivityMainBinding
+    @VisibleForTesting
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var binding: PhotosActivityBinding
     private lateinit var viewModel: PhotoViewModel
+
+    open fun inject() {
+        AndroidInjection.inject(this)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidInjection.inject(this)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        inject()
+        binding = DataBindingUtil.setContentView(this, R.layout.photos_activity)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PhotoViewModel::class.java)
         binding.viewModel = viewModel
         binding.executePendingBindings()
@@ -61,12 +69,12 @@ class MainActivity : AppCompatActivity() {
             RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
 
-        class ViewHolder(val itemBinding: ItemBinding) : RecyclerView.ViewHolder(itemBinding.root)
+        class ViewHolder(val itemBinding: PhotoBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup,
                                         viewType: Int): MyAdapter.ViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val itemBinding = ItemBinding.inflate(inflater, parent, false)
+            val itemBinding = PhotoBinding.inflate(inflater, parent, false)
             return ViewHolder(itemBinding)
         }
 

@@ -1,4 +1,4 @@
-package software.uniqore.codesample;
+package software.uniqore.codesample.support;
 
 import com.bumptech.glide.module.AppGlideModule;
 

@@ -15,6 +15,7 @@ import software.uniqore.codesample.cache.DefaultCache
 import software.uniqore.codesample.cache.FileCacheStorage
 import software.uniqore.codesample.remote.FlickrPhotoProvider
 import software.uniqore.codesample.repository.DefaultPhotoRepository
+import software.uniqore.codesample.support.ViewModelModule
 import javax.inject.Singleton
 
 
@@ -39,7 +40,7 @@ interface ApplicationComponent : AndroidInjector<CodeSampleApplication> {
 }
 
 @Module(includes = [AndroidSupportInjectionModule::class, FlickrPhotoProvider.DaggerModule::class, ViewModelModule::class, DefaultPhotoRepository.DaggerModule::class, FileCacheStorage.DaggerModule::class, DefaultCache.DaggerModule::class])
-class ApplicationModule() {
+class ApplicationModule {
 
     @Provides
     @Singleton
@@ -51,7 +52,7 @@ class ApplicationModule() {
 abstract class ActivityBuilder {
 
     @ContributesAndroidInjector
-    abstract fun bindMainActivity(): MainActivity
+    abstract fun bindPhotosActivity(): PhotosActivity
 
 
 }

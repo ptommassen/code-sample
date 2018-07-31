@@ -12,11 +12,6 @@ import software.uniqore.codesample.cache.CacheStorage
 import software.uniqore.codesample.cache.FileCacheStorage
 import software.uniqore.codesample.model.Photo
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class FileCacheStorageTest {
 

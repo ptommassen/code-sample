@@ -1,4 +1,4 @@
-package software.uniqore.codesample
+package software.uniqore.codesample.support
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
@@ -6,6 +6,7 @@ import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
+import software.uniqore.codesample.PhotoViewModel
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.reflect.KClass
