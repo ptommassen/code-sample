@@ -12,11 +12,12 @@ import software.uniqore.codesample.repository.PhotoRepository
 import javax.inject.Inject
 
 
-class PhotoViewModel @Inject constructor(private var repository: PhotoRepository) : ViewModel() {
+class PhotoViewModel @Inject constructor(private val repository: PhotoRepository) : ViewModel() {
 
     val loading = ObservableBoolean(true)
     var photos = MutableLiveData<List<Photo>>()
     private val disposables = CompositeDisposable()
+
 
     fun loadPhotos() {
         loading.set(true)
