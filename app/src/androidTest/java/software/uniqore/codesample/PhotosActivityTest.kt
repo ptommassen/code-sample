@@ -15,10 +15,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.threeten.bp.LocalDateTime
-import software.uniqore.codesample.model.Photo
 import software.uniqore.codesample.repository.PhotoRepository
 import software.uniqore.codesample.support.ActivityInjectionRule
+import software.uniqore.codesample.support.PhotoLists
 
 
 @RunWith(AndroidJUnit4::class)
@@ -30,7 +29,6 @@ class PhotosActivityTest {
     @JvmField
     val activityRule = ActivityTestRule(PhotosActivity::class.java, false, false)
 
-
     @Rule
     @JvmField
     val injectionRule = ActivityInjectionRule(PhotosActivity::class.java) { it.viewModelFactory = factory }
@@ -39,10 +37,8 @@ class PhotosActivityTest {
     lateinit var viewModel: PhotoViewModel
     lateinit var repository: PhotoRepository
 
-
-    private fun cachedPhotoList() = listOf(Photo("cached", "authorCached", LocalDateTime.now()))
-    private fun remotePhotoList() = listOf(Photo("remote", "author", LocalDateTime.now()))
-
+    val cachedPhotoList = PhotoLists.cached()
+    val remotePhotoList = PhotoLists.remote()
 
     @Before
     fun setup() {
@@ -54,10 +50,10 @@ class PhotosActivityTest {
         repository = mock {
             on {
                 getPhotos()
-            } doReturn Observable.just(cachedPhotoList())
+            } doReturn Observable.just(cachedPhotoList)
             on {
                 update()
-            } doReturn Single.just(remotePhotoList())
+            } doReturn Single.just(remotePhotoList)
         }
 
         viewModel = spy(PhotoViewModel(repository))
@@ -70,7 +66,7 @@ class PhotosActivityTest {
     fun testText() {
         onView(withId(R.id.my_recycler_view)).check(matches(isDisplayed()))
 
-        onView(withText(cachedPhotoList()[0].author)).check(matches(isDisplayed()))
+        onView(withText(cachedPhotoList[0].author)).check(matches(isDisplayed()))
 
         verify(viewModel).loadPhotos()
 
@@ -78,7 +74,7 @@ class PhotosActivityTest {
 
         verify(viewModel).refreshPhotos()
 
-        onView(withText(remotePhotoList()[0].author)).check(matches(isDisplayed()))
+        onView(withText(remotePhotoList[0].author)).check(matches(isDisplayed()))
 
     }
 

@@ -11,7 +11,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "software.uniqore.codesample.AndroidTestRunner"
+        testInstrumentationRunner "software.uniqore.codesample.support.AndroidTestRunner"
     }
     buildTypes {
         release {
@@ -24,6 +24,17 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    sourceSets {
+        String testLibDir = 'src/testLib/java'
+        test {
+            java.srcDir testLibDir
+        }
+        androidTest {
+            java.srcDir testLibDir
+        }
+    }
+
 }
 
 dependencies {

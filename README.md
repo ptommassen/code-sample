@@ -14,8 +14,3 @@ What it actually demonstrates:
 * Http calls using Retrofit
 * Image loading using Glide
 * Testing
-
-Still in progress:
-* Mocking the ViewModel for UI testing :/
- 
- 

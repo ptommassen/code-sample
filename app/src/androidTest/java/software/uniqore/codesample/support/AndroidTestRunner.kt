@@ -1,4 +1,4 @@
-package software.uniqore.codesample
+package software.uniqore.codesample.support
 
 import android.app.Application
 import android.content.Context
